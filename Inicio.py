@@ -47,17 +47,17 @@ st.markdown("""
     /* Estilos personalizados para Tampa Clean - Tema claro */
     .main-header {
         font-size: 2.5rem;
-        color: #1a472a;
+        color: #004085;
         text-align: center;
         margin-bottom: 2rem;
         font-weight: bold;
-        text-shadow: 1px 1px 2px rgba(26, 71, 42, 0.1);
-        border-bottom: 3px solid #28a745;
+        text-shadow: 1px 1px 2px rgba(0, 64, 133, 0.1);
+        border-bottom: 3px solid #007bff;
         padding-bottom: 1rem;
     }
     .subheader {
         font-size: 1.5rem;
-        color: #1a472a;
+        color: #004085;
         margin-bottom: 1rem;
         font-weight: 600;
     }
@@ -85,7 +85,7 @@ st.markdown("""
     .sidebar .sidebar-content h2, 
     .sidebar .sidebar-content h3,
     .css-1outpf7 {
-        color: #1a472a !important;
+        color: #004085 !important;
     }
     
     /* Estilos para los ejemplos de preguntas */
@@ -93,13 +93,13 @@ st.markdown("""
         background-color: #f8f9fa;
         padding: 1.5rem;
         border-radius: 10px;
-        border-left: 4px solid #28a745;
+        border-left: 4px solid #007bff;
         margin-bottom: 2rem;
     }
     
     /* Estilos para botones */
     .stButton > button {
-        background-color: #28a745;
+        background-color: #007bff;
         color: white;
         border-radius: 5px;
         border: none;
@@ -107,7 +107,7 @@ st.markdown("""
         font-weight: 500;
     }
     .stButton > button:hover {
-        background-color: #218838;
+        background-color: #0056b3;
     }
     
     /* Contenedor de mensajes de chat */
@@ -125,8 +125,8 @@ def initialize_session_vars():
     if "is_configured" not in st.session_state:
         st.session_state.is_configured = False
     if "agent_endpoint" not in st.session_state:
-        # Endpoint personalizable para Tampa Clean
-        st.session_state.agent_endpoint = ""
+        # Endpoint fijo para Tampa Clean
+        st.session_state.agent_endpoint = "https://e2bveggk4tn4y4gxty7a6ere.agents.do-ai.run"
     if "agent_access_key" not in st.session_state:
         st.session_state.agent_access_key = ""
     if "messages" not in st.session_state:
@@ -165,37 +165,26 @@ st.markdown("<h1 class='main-header'>🧽 Asistente Virtual Tampa Clean</h1>", u
 
 # Pantalla de configuración inicial si aún no se ha configurado
 if not st.session_state.is_configured:
-    st.markdown("<h2 class='subheader'>🔐 Configuración del Asistente</h2>", unsafe_allow_html=True)
+    st.markdown("<h2 class='subheader'>🔐 Acceso al Asistente Tampa Clean</h2>", unsafe_allow_html=True)
     
-    st.info("💡 **Tampa Clean** - Configuración del asistente virtual para empleados y clientes. Por favor ingresa las credenciales de acceso.")
+    st.info("💡 **Tampa Clean** - Bienvenido al asistente virtual. Por favor ingresa tu clave de acceso para comenzar.")
     
-    # Solicitar endpoint y clave de acceso
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        agent_endpoint = st.text_input(
-            "🌐 Endpoint del Agente", 
-            placeholder="https://e2bveggk4tn4y4gxty7a6ere.agents.do-ai.run",
-            help="URL del endpoint del agente de Tampa Clean"
-        )
-    
-    with col2:
-        agent_access_key = st.text_input(
-            "🔑 Clave de Acceso", 
-            type="password",
-            placeholder="Ingresa tu clave de acceso",
-            help="Tu clave de acceso para autenticar las solicitudes"
-        )
+    # Solo solicitar clave de acceso, el endpoint ya está fijo
+    agent_access_key = st.text_input(
+        "🔑 Clave de Acceso", 
+        type="password",
+        placeholder="Ingresa tu clave de acceso",
+        help="Tu clave de acceso para autenticar las solicitudes al asistente Tampa Clean"
+    )
     
     if st.button("🚀 Iniciar Asistente Tampa Clean"):
-        if not agent_endpoint or not agent_access_key:
-            st.error("⚠️ Por favor, completa todos los campos requeridos")
+        if not agent_access_key:
+            st.error("⚠️ Por favor, ingresa la clave de acceso")
         else:
-            # Guardar configuración en session_state
-            st.session_state.agent_endpoint = agent_endpoint
+            # Guardar configuración en session_state (el endpoint ya está preconfigurado)
             st.session_state.agent_access_key = agent_access_key
             st.session_state.is_configured = True
-            st.success("✅ ¡Configuración exitosa! Iniciando asistente Tampa Clean...")
+            st.success("✅ ¡Acceso autorizado! Iniciando asistente Tampa Clean...")
             time.sleep(1)
             st.rerun()
     
@@ -208,33 +197,33 @@ st.markdown("<p class='subheader'>💬 Chatea con tu asistente virtual de Tampa 
 # Agregar ejemplos de preguntas específicos para Tampa Clean
 st.markdown("""
 <div class="example-questions">
-    <p style="font-size: 1.1rem; color: #1a472a; margin-bottom: 1.5rem; font-weight: 600; font-family: 'Segoe UI', Arial, sans-serif;">
+    <p style="font-size: 1.1rem; color: #004085; margin-bottom: 1.5rem; font-weight: 600; font-family: 'Segoe UI', Arial, sans-serif;">
         💡 Ejemplos de preguntas que puedes hacer:
     </p>
     <ul style="list-style-type: none; padding-left: 0; margin-bottom: 1.5rem; font-family: 'Segoe UI', Arial, sans-serif;">
-        <li style="margin-bottom: 0.8rem; padding: 0.8rem 1rem; background-color: rgba(40, 167, 69, 0.08); border-radius: 6px; border-left: 3px solid #28a745;">
-            <span style="font-weight: 500; color: #1a472a;">🏠 ¿Qué servicios de limpieza residencial ofrecen?</span>
+        <li style="margin-bottom: 0.8rem; padding: 0.8rem 1rem; background-color: rgba(0, 123, 255, 0.08); border-radius: 6px; border-left: 3px solid #007bff;">
+            <span style="font-weight: 500; color: #004085;">🏠 ¿Qué servicios de limpieza residencial ofrecen?</span>
         </li>
-        <li style="margin-bottom: 0.8rem; padding: 0.8rem 1rem; background-color: rgba(40, 167, 69, 0.08); border-radius: 6px; border-left: 3px solid #28a745;">
-            <span style="font-weight: 500; color: #1a472a;">🏢 ¿Cómo funciona la limpieza comercial de oficinas?</span>
+        <li style="margin-bottom: 0.8rem; padding: 0.8rem 1rem; background-color: rgba(0, 123, 255, 0.08); border-radius: 6px; border-left: 3px solid #007bff;">
+            <span style="font-weight: 500; color: #004085;">🏢 ¿Cómo funciona la limpieza comercial de oficinas?</span>
         </li>
-        <li style="margin-bottom: 0.8rem; padding: 0.8rem 1rem; background-color: rgba(40, 167, 69, 0.08); border-radius: 6px; border-left: 3px solid #28a745;">
-            <span style="font-weight: 500; color: #1a472a;">👔 ¿Cuáles son las políticas para empleados nuevos?</span>
+        <li style="margin-bottom: 0.8rem; padding: 0.8rem 1rem; background-color: rgba(0, 123, 255, 0.08); border-radius: 6px; border-left: 3px solid #007bff;">
+            <span style="font-weight: 500; color: #004085;">👔 ¿Cuáles son las políticas para empleados nuevos?</span>
         </li>
-        <li style="margin-bottom: 0.8rem; padding: 0.8rem 1rem; background-color: rgba(40, 167, 69, 0.08); border-radius: 6px; border-left: 3px solid #28a745;">
-            <span style="font-weight: 500; color: #1a472a;">🧽 ¿Qué productos de limpieza debo usar para baños?</span>
+        <li style="margin-bottom: 0.8rem; padding: 0.8rem 1rem; background-color: rgba(0, 123, 255, 0.08); border-radius: 6px; border-left: 3px solid #007bff;">
+            <span style="font-weight: 500; color: #004085;">🧽 ¿Qué productos de limpieza debo usar para baños?</span>
         </li>
-        <li style="margin-bottom: 0.8rem; padding: 0.8rem 1rem; background-color: rgba(40, 167, 69, 0.08); border-radius: 6px; border-left: 3px solid #28a745;">
-            <span style="font-weight: 500; color: #1a472a;">💰 ¿Cómo funcionan los pagos y cuándo se realizan?</span>
+        <li style="margin-bottom: 0.8rem; padding: 0.8rem 1rem; background-color: rgba(0, 123, 255, 0.08); border-radius: 6px; border-left: 3px solid #007bff;">
+            <span style="font-weight: 500; color: #004085;">💰 ¿Cómo funcionan los pagos y cuándo se realizan?</span>
         </li>
-        <li style="margin-bottom: 0.8rem; padding: 0.8rem 1rem; background-color: rgba(40, 167, 69, 0.08); border-radius: 6px; border-left: 3px solid #28a745;">
-            <span style="font-weight: 500; color: #1a472a;">📞 ¿Cuáles son los números de contacto de emergencia?</span>
+        <li style="margin-bottom: 0.8rem; padding: 0.8rem 1rem; background-color: rgba(0, 123, 255, 0.08); border-radius: 6px; border-left: 3px solid #007bff;">
+            <span style="font-weight: 500; color: #004085;">📞 ¿Cuáles son los números de contacto de emergencia?</span>
         </li>
-        <li style="margin-bottom: 0.8rem; padding: 0.8rem 1rem; background-color: rgba(40, 167, 69, 0.08); border-radius: 6px; border-left: 3px solid #28a745;">
-            <span style="font-weight: 500; color: #1a472a;">🕐 ¿Cómo solicito permisos y días libres?</span>
+        <li style="margin-bottom: 0.8rem; padding: 0.8rem 1rem; background-color: rgba(0, 123, 255, 0.08); border-radius: 6px; border-left: 3px solid #007bff;">
+            <span style="font-weight: 500; color: #004085;">🕐 ¿Cómo solicito permisos y días libres?</span>
         </li>
-        <li style="margin-bottom: 0.8rem; padding: 0.8rem 1rem; background-color: rgba(40, 167, 69, 0.08); border-radius: 6px; border-left: 3px solid #28a745;">
-            <span style="font-weight: 500; color: #1a472a;">🚨 ¿Qué hacer en caso de emergencias durante el servicio?</span>
+        <li style="margin-bottom: 0.8rem; padding: 0.8rem 1rem; background-color: rgba(0, 123, 255, 0.08); border-radius: 6px; border-left: 3px solid #007bff;">
+            <span style="font-weight: 500; color: #004085;">🚨 ¿Qué hacer en caso de emergencias durante el servicio?</span>
         </li>
     </ul>
 </div>
@@ -246,7 +235,8 @@ st.sidebar.title("⚙️ Configuración Tampa Clean")
 # Mostrar información de conexión actual
 st.sidebar.success("✅ Asistente configurado")
 with st.sidebar.expander("📋 Ver configuración actual"):
-    st.code(f"Endpoint: {st.session_state.agent_endpoint}\nClave de acceso: {'*'*10}")
+    st.code(f"Endpoint: {st.session_state.agent_endpoint}\nClave de acceso: {'*'*len(st.session_state.agent_access_key) if st.session_state.agent_access_key else 'No configurada'}")
+    st.info("🔒 El endpoint está preconfigurado para mayor seguridad")
 
 # Información de Tampa Clean
 with st.sidebar.expander("ℹ️ Información de Tampa Clean"):
@@ -399,7 +389,7 @@ if st.sidebar.button("💾 Guardar conversación en PDF"):
 if st.sidebar.button("🚪 Cerrar sesión"):
     st.session_state.is_configured = False
     st.session_state.agent_access_key = ""
-    st.session_state.agent_endpoint = ""
+    # El endpoint permanece fijo, no se limpia
     st.rerun()
 
 # Función para enviar consulta al agente
