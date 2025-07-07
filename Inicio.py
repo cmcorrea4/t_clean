@@ -2,9 +2,6 @@ import streamlit as st
 import requests
 import json
 import time
-import base64
-from gtts import gTTS
-import io
 from fpdf import FPDF
 import tempfile
 
@@ -61,11 +58,6 @@ st.markdown("""
         margin-bottom: 1rem;
         font-weight: 600;
     }
-    .audio-controls {
-        display: flex;
-        align-items: center;
-        margin-top: 10px;
-    }
     .footer {
         position: fixed;
         bottom: 0;
@@ -99,15 +91,17 @@ st.markdown("""
     
     /* Estilos para botones */
     .stButton > button {
-        background-color: #007bff;
-        color: white;
+        background-color: transparent;
+        color: #007bff;
         border-radius: 5px;
-        border: none;
+        border: 2px solid #007bff;
         padding: 0.5rem 1rem;
         font-weight: 500;
     }
     .stButton > button:hover {
-        background-color: #0056b3;
+        background-color: rgba(0, 123, 255, 0.1);
+        color: #0056b3;
+        border-color: #0056b3;
     }
     
     /* Contenedor de mensajes de chat */
@@ -134,31 +128,6 @@ def initialize_session_vars():
 
 # Inicializar variables
 initialize_session_vars()
-
-# Función para generar audio a partir de texto
-def text_to_speech(text):
-    try:
-        # Crear objeto gTTS (siempre en español y rápido)
-        tts = gTTS(text=text, lang='es', slow=False)
-        
-        # Guardar audio en un buffer en memoria
-        audio_buffer = io.BytesIO()
-        tts.write_to_fp(audio_buffer)
-        audio_buffer.seek(0)
-        
-        # Convertir a base64 para reproducir en HTML (sin autoplay)
-        audio_base64 = base64.b64encode(audio_buffer.read()).decode()
-        audio_html = f'''
-        <div class="audio-controls">
-            <audio controls style="width: 100%; max-width: 400px;">
-                <source src="data:audio/mp3;base64,{audio_base64}" type="audio/mp3">
-                Tu navegador no soporta el elemento de audio.
-            </audio>
-        </div>
-        '''
-        return audio_html
-    except Exception as e:
-        return f"<div class='error'>Error al generar audio: {str(e)}</div>"
 
 # Título y descripción de la aplicación
 st.markdown("<h1 class='main-header'>🧽 Asistente Virtual Tampa Clean</h1>", unsafe_allow_html=True)
@@ -194,40 +163,52 @@ if not st.session_state.is_configured:
 # Una vez configurado, mostrar la interfaz normal
 st.markdown("<p class='subheader'>💬 Chatea con tu asistente virtual de Tampa Clean</p>", unsafe_allow_html=True)
 
-# Agregar ejemplos de preguntas específicos para Tampa Clean
+# Agregar ejemplos de preguntas específicos para Tampa Clean en dos columnas
 st.markdown("""
 <div class="example-questions">
-    <p style="font-size: 1.1rem; color: #004085; margin-bottom: 1.5rem; font-weight: 600; font-family: 'Segoe UI', Arial, sans-serif;">
+    <p style="font-size: 1.1rem; color: #004085; margin-bottom: 1.5rem; font-weight: 600; font-family: 'Segoe UI', Arial, sans-serif; text-align: center;">
         💡 Ejemplos de preguntas que puedes hacer:
     </p>
-    <ul style="list-style-type: none; padding-left: 0; margin-bottom: 1.5rem; font-family: 'Segoe UI', Arial, sans-serif;">
-        <li style="margin-bottom: 0.8rem; padding: 0.8rem 1rem; background-color: rgba(0, 123, 255, 0.08); border-radius: 6px; border-left: 3px solid #007bff;">
-            <span style="font-weight: 500; color: #004085;">🏠 ¿Qué servicios de limpieza residencial ofrecen?</span>
-        </li>
-        <li style="margin-bottom: 0.8rem; padding: 0.8rem 1rem; background-color: rgba(0, 123, 255, 0.08); border-radius: 6px; border-left: 3px solid #007bff;">
-            <span style="font-weight: 500; color: #004085;">🏢 ¿Cómo funciona la limpieza comercial de oficinas?</span>
-        </li>
-        <li style="margin-bottom: 0.8rem; padding: 0.8rem 1rem; background-color: rgba(0, 123, 255, 0.08); border-radius: 6px; border-left: 3px solid #007bff;">
-            <span style="font-weight: 500; color: #004085;">👔 ¿Cuáles son las políticas para empleados nuevos?</span>
-        </li>
-        <li style="margin-bottom: 0.8rem; padding: 0.8rem 1rem; background-color: rgba(0, 123, 255, 0.08); border-radius: 6px; border-left: 3px solid #007bff;">
-            <span style="font-weight: 500; color: #004085;">🧽 ¿Qué productos de limpieza debo usar para baños?</span>
-        </li>
-        <li style="margin-bottom: 0.8rem; padding: 0.8rem 1rem; background-color: rgba(0, 123, 255, 0.08); border-radius: 6px; border-left: 3px solid #007bff;">
-            <span style="font-weight: 500; color: #004085;">💰 ¿Cómo funcionan los pagos y cuándo se realizan?</span>
-        </li>
-        <li style="margin-bottom: 0.8rem; padding: 0.8rem 1rem; background-color: rgba(0, 123, 255, 0.08); border-radius: 6px; border-left: 3px solid #007bff;">
-            <span style="font-weight: 500; color: #004085;">📞 ¿Cuáles son los números de contacto de emergencia?</span>
-        </li>
-        <li style="margin-bottom: 0.8rem; padding: 0.8rem 1rem; background-color: rgba(0, 123, 255, 0.08); border-radius: 6px; border-left: 3px solid #007bff;">
-            <span style="font-weight: 500; color: #004085;">🕐 ¿Cómo solicito permisos y días libres?</span>
-        </li>
-        <li style="margin-bottom: 0.8rem; padding: 0.8rem 1rem; background-color: rgba(0, 123, 255, 0.08); border-radius: 6px; border-left: 3px solid #007bff;">
-            <span style="font-weight: 500; color: #004085;">🚨 ¿Qué hacer en caso de emergencias durante el servicio?</span>
-        </li>
-    </ul>
 </div>
 """, unsafe_allow_html=True)
+
+col1, col2 = st.columns(2)
+
+with col1:
+    st.markdown("""
+    <div style="background-color: rgba(0, 123, 255, 0.08); padding: 1rem; border-radius: 8px; border-left: 3px solid #007bff; margin-bottom: 1rem;">
+        <div style="margin-bottom: 0.8rem; padding: 0.5rem; background-color: rgba(0, 123, 255, 0.05); border-radius: 4px;">
+            <span style="font-weight: 500; color: #004085;">🏠 ¿Qué servicios de limpieza residencial ofrecen?</span>
+        </div>
+        <div style="margin-bottom: 0.8rem; padding: 0.5rem; background-color: rgba(0, 123, 255, 0.05); border-radius: 4px;">
+            <span style="font-weight: 500; color: #004085;">🏢 ¿Cómo funciona la limpieza comercial de oficinas?</span>
+        </div>
+        <div style="margin-bottom: 0.8rem; padding: 0.5rem; background-color: rgba(0, 123, 255, 0.05); border-radius: 4px;">
+            <span style="font-weight: 500; color: #004085;">👔 ¿Cuáles son las políticas para empleados nuevos?</span>
+        </div>
+        <div style="margin-bottom: 0.8rem; padding: 0.5rem; background-color: rgba(0, 123, 255, 0.05); border-radius: 4px;">
+            <span style="font-weight: 500; color: #004085;">🧽 ¿Qué productos de limpieza debo usar para baños?</span>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+with col2:
+    st.markdown("""
+    <div style="background-color: rgba(0, 123, 255, 0.08); padding: 1rem; border-radius: 8px; border-left: 3px solid #007bff; margin-bottom: 1rem;">
+        <div style="margin-bottom: 0.8rem; padding: 0.5rem; background-color: rgba(0, 123, 255, 0.05); border-radius: 4px;">
+            <span style="font-weight: 500; color: #004085;">💰 ¿Cómo funcionan los pagos y cuándo se realizan?</span>
+        </div>
+        <div style="margin-bottom: 0.8rem; padding: 0.5rem; background-color: rgba(0, 123, 255, 0.05); border-radius: 4px;">
+            <span style="font-weight: 500; color: #004085;">📞 ¿Cuáles son los números de contacto de emergencia?</span>
+        </div>
+        <div style="margin-bottom: 0.8rem; padding: 0.5rem; background-color: rgba(0, 123, 255, 0.05); border-radius: 4px;">
+            <span style="font-weight: 500; color: #004085;">🕐 ¿Cómo solicito permisos y días libres?</span>
+        </div>
+        <div style="margin-bottom: 0.8rem; padding: 0.5rem; background-color: rgba(0, 123, 255, 0.05); border-radius: 4px;">
+            <span style="font-weight: 500; color: #004085;">🚨 ¿Qué hacer en caso de emergencias durante el servicio?</span>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
 
 # Sidebar para configuración
 st.sidebar.title("⚙️ Configuración Tampa Clean")
@@ -472,9 +453,6 @@ def query_agent(prompt, history=None):
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.markdown(message["content"])
-        # Si es un mensaje del asistente y tiene audio asociado, mostrarlo
-        if message["role"] == "assistant" and "audio_html" in message:
-            st.markdown(message["audio_html"], unsafe_allow_html=True)
 
 # Campo de entrada para el mensaje
 prompt = st.chat_input("💬 Pregúntame sobre Tampa Clean - servicios, políticas, procedimientos...")
@@ -511,18 +489,8 @@ if prompt:
                 response_text = response.get("response", "No se recibió respuesta del asistente de Tampa Clean.")
                 st.markdown(response_text)
                 
-                # Generar audio (siempre)
-                audio_html = None
-                with st.spinner("🔊 Generando audio..."):
-                    audio_html = text_to_speech(response_text)
-                    if audio_html:
-                        st.markdown(audio_html, unsafe_allow_html=True)
-                
-                # Añadir respuesta al historial con el audio
-                message_data = {"role": "assistant", "content": response_text}
-                if audio_html:
-                    message_data["audio_html"] = audio_html
-                st.session_state.messages.append(message_data)
+                # Añadir respuesta al historial
+                st.session_state.messages.append({"role": "assistant", "content": response_text})
 
 # Pie de página
 st.markdown("""
