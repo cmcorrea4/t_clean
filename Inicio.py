@@ -175,7 +175,7 @@ if not st.session_state.is_configured:
     with col1:
         agent_endpoint = st.text_input(
             "🌐 Endpoint del Agente", 
-            placeholder="https://tu-agente.do-ai.run",
+            placeholder="https://e2bveggk4tn4y4gxty7a6ere.agents.do-ai.run",
             help="URL del endpoint del agente de Tampa Clean"
         )
     
